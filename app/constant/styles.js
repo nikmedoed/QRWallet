@@ -28,7 +28,7 @@ export default styles = StyleSheet.create({
   },
 
   titleText: {
-    fontSize: 30,
+    fontSize: 25,
   },
 
   icon: {

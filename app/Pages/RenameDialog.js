@@ -8,18 +8,24 @@ import {
   View,
 } from "react-native";
 import styles, * as styleConstants from "../constant/styles";
+import UserData from "../UserData";
 
 import { useCardAnimation } from "@react-navigation/stack";
 
-export default RenameDialogScreen = ({ navigation, initText }) => {
+export default RenameDialogScreen = ({ navigation }) => {
   //   const { colors } = useTheme();
+  const { selected, name, content } = UserData.getDataToShow();
+
   const { current } = useCardAnimation();
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, [navigation]);
-  const [value, onChangeText] = React.useState(initText);
+  let [value, onChangeText] = React.useState(name);
+
+  console.log(selected, name, content, value);
+
   return (
     <View style={styles.containerCenter}>
       <Pressable style={styles.backdrop} onPress={() => navigation.goBack()} />
@@ -53,7 +59,13 @@ export default RenameDialogScreen = ({ navigation, initText }) => {
         ></TextInput>
         {/*  */}
         <View style={{ ...styles.containerRow, ...styles.buttonMargin }}>
-          <TouchableOpacity style={styles.button} onPress={navigation.goBack}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              UserData.renameQR(value, selected);
+              navigation.goBack();
+            }}
+          >
             <Text style={{ ...styles.buttontext }}>Сохранить</Text>
           </TouchableOpacity>
 

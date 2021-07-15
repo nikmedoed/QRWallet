@@ -4,15 +4,31 @@ import { Text, View, TouchableOpacity } from "react-native";
 import AddSVG from "./assets/add.svg";
 import styles, * as styleConstants from "../constant/styles";
 import GestureRecognizer from "react-native-swipe-gestures";
+import UserData from "../UserData";
+import picker from "../Picker";
 
-export default function App({ navigation, callback }) {
+export default function App({ navigation, noBack }) {
+  const { selected, name, content } = UserData.getDataToShow;
+
   const back = () => {
-    navigation.goBack();
+    if (!noBack) {
+      navigation.goBack();
+    }
   };
 
   const onPress = (e) => {
-    callback({ name: "dsffsdadfssfdsfad", content: "121234124124" });
-    back();
+    // callback({ name: "dsffsdadfssfdsfad", content: "121234124124" });
+
+    picker((data) => {
+      console.log("picker", data);
+
+      UserData.insertQR({ content: data });
+      if (!noBack) {
+        navigation.replace("RenameDialog");
+      } else {
+        navigation.navigate("RenameDialog");
+      }
+    });
   };
 
   return (

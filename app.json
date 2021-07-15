@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "QRW",
-    "slug": "QRW",
+    "name": "QRWallet",
+    "slug": "qrwallet",
     "description": "Приложение для хранения QR-кодов",
     "version": "1.0.0",
     "sdkVersion": "42.0.0",
@@ -20,12 +20,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.qrwallet"
+      "bundleIdentifier": "com.qrwallet",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#39E400"
+        "backgroundColor": "#39E400",
+        "versionCode": 1
       },
       "package": "com.qrwallet"
     },

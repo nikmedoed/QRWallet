@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import styles, * as styleConstants from "../constant/styles";
-
+import UserData from "../UserData";
 import { useCardAnimation } from "@react-navigation/stack";
 
 export default RenameDialogScreen = ({ navigation }) => {
@@ -41,7 +41,13 @@ export default RenameDialogScreen = ({ navigation }) => {
           Вы действительно хотите удалить этот QR-код?
         </Text>
         <View style={{ ...styles.containerRow, ...styles.buttonMargin }}>
-          <TouchableOpacity style={styles.button} onPress={navigation.goBack}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              UserData.deleteItem();
+              navigation.goBack();
+            }}
+          >
             <Text style={{ ...styles.buttontext }}>Удалить</Text>
           </TouchableOpacity>
 

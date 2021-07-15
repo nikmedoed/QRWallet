@@ -5,18 +5,11 @@ import BurstSVG from "./assets/burst.svg";
 import DeleteSVG from "./assets/delete.svg";
 import GestureRecognizer from "react-native-swipe-gestures";
 import QRCode from "react-native-qrcode-svg";
-import { BarCodeScanner } from "expo-barcode-scanner";
-import * as ImagePicker from "expo-image-picker";
-import AddQR from "./AddQR";
 import UserData from "../UserData";
+import AddQR from "./AddQR";
+import picker from "../Picker";
 
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  AppState,
-  AppStateStatus,
-} from "react-native";
+import { Text, View, TouchableOpacity, AppState } from "react-native";
 
 export default class MainScreen extends React.Component {
   appState = AppState.currentState;
@@ -27,18 +20,28 @@ export default class MainScreen extends React.Component {
 
     if (!this.shouldInit) return;
     this.shouldInit = false;
+    this.state = UserData.getDataToShow();
 
-    this.pickImage = this.pickImage.bind(this);
-    this.insertToArray = this.insertToArray.bind(this);
+    this.updateState = this.updateState.bind(this);
+  }
+
+  updateState() {
+    console.log("updateState");
+
+    this.setState({
+      ...UserData.getDataToShow("updateState"),
+    });
   }
 
   componentDidMount() {
     AppState.addEventListener("change", this.handleAppStateChange);
+    UserData.addChangeListener(this.updateState);
   }
 
   componentWillUnmount() {
     UserData.storeData();
     AppState.removeEventListener("change", this.handleAppStateChange);
+    UserData.removeChangeListener();
   }
 
   handleAppStateChange = (nextAppState) => {
@@ -52,70 +55,8 @@ export default class MainScreen extends React.Component {
     this.appState = nextAppState;
   };
 
-  insertToArray(elem) {
-    let { qrArraray, selected } = this.state;
-    this.setState({
-      qrArraray: [...qrArraray.splice(0, selected), elem, ...qrArraray],
-      selected: selected + 1,
-    });
-  }
-
-  onSwipeUp(gestureState) {
-    this.props.navigation.navigate("AddQR", {
-      callback: this.insertToArray.bind(this),
-    });
-  }
-
-  //   onSwipeDown(gestureState) {
-  //     this.setState({myText: 'You swiped down!'});
-  //   }
-
-  onSwipeLeft(gestureState) {
-    this.setState({
-      selected:
-        (this.state.selected + this.state.qrArraray.length - 1) %
-        this.state.qrArraray.length,
-    });
-  }
-
-  onSwipeRight(gestureState) {
-    this.setState({
-      selected: (this.state.selected + 1) % this.state.qrArraray.length,
-    });
-  }
-
-  async pickImage() {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      alert(
-        "Извините, для использования приложения требуется доступ к фотогалерее"
-      );
-    } else {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: false,
-        quality: 1,
-      });
-
-      if (!result.cancelled) {
-        let bar = await BarCodeScanner.scanFromURLAsync(result.uri);
-        console.log(bar);
-        if (!(bar[0] && bar[0].data)) {
-          alert("Прочитать код не получилось");
-        } else {
-          this.insertToArray({ name: "", content: bar.data });
-          this.goToRename();
-        }
-      }
-    }
-  }
-
   goToRename() {
-    const { name, content } = this.state.qrArraray[this.state.selected];
-    this.props.navigation.navigate("RenameDialog", {
-      initText: name || "",
-      qrDate: content,
-    });
+    this.props.navigation.navigate("RenameDialog");
   }
 
   render() {
@@ -124,26 +65,28 @@ export default class MainScreen extends React.Component {
       directionalOffsetThreshold: 80,
     };
 
-    const { selected, name, content } = UserData.getDataToShow;
-
+    const { selected, name, content } = this.state;
+    console.log("render selected, name, content", selected, name, content);
     const { navigation } = this.props;
-
     if (!content) {
-      this.onSwipeUp();
-      return <View />;
+      return <AddQR navigation={navigation} noBack={true} />;
     } else {
       return (
         <GestureRecognizer
-          onSwipeUp={(state) => this.onSwipeUp(state)}
-          onSwipeLeft={(state) => this.onSwipeLeft(state)}
-          onSwipeRight={(state) => this.onSwipeRight(state)}
+          onSwipeUp={() => navigation.navigate("AddQR")}
+          onSwipeLeft={() => UserData.nextQR()}
+          onSwipeRight={() => UserData.prevQR()}
           config={configGesture}
           style={styles.container}
         >
           <View style={styles.containerSecondary}>
             <TouchableOpacity
               style={{ ...styles.icon, top: 0, left: 0 }}
-              onPress={this.pickImage}
+              onPress={() =>
+                picker((e) => {
+                  UserData.replaceQR(e, selected);
+                })
+              }
             >
               <BurstSVG
                 width="100%"
@@ -155,7 +98,7 @@ export default class MainScreen extends React.Component {
             <QRCode size={250} value={content} />
 
             <TouchableOpacity
-              onPress={this.goToRename}
+              onPress={() => navigation.navigate("RenameDialog")}
               style={
                 {
                   // position: "absolute", bottom: 110,
@@ -167,7 +110,7 @@ export default class MainScreen extends React.Component {
 
             <TouchableOpacity
               style={{ ...styles.icon, bottom: 0, right: 0 }}
-              onPress={() => navigation.navigate("DeleteDialog", {})}
+              onPress={() => navigation.navigate("DeleteDialog")}
             >
               <DeleteSVG
                 width="100%"
