@@ -26,10 +26,10 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#39E400",
-        "versionCode": 1
+        "backgroundColor": "#39E400"
       },
-      "package": "com.qrwallet"
+      "package": "com.qrwallet",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
