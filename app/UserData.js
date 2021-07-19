@@ -16,7 +16,7 @@ class UserData extends NativeEventEmitter {
     a = AsyncStorage.getItem(kSelected)
       .then((el) => (this.selected = el && !isNaN(el) ? parseInt(el) : 0))
       .catch((e) => {
-        console.log("No Seleleted", e);
+        // console.log("No Seleleted", e);
         this.selected = 0;
       });
 
@@ -26,7 +26,7 @@ class UserData extends NativeEventEmitter {
         this.qrArray = el ? JSON.parse(el) : [];
       })
       .catch((e) => {
-        console.log("No qrArray", e);
+        // console.log("No qrArray", e);
         this.qrArray = [];
       });
 
@@ -37,11 +37,11 @@ class UserData extends NativeEventEmitter {
 
   logInfo(args) {
     // console.log();
-    console.log(args, "len / sel", this.qrArray.length, this.selected);
+    // console.log(args, "len / sel", this.qrArray.length, this.selected);
   }
 
   getDataToShow() {
-    this.logInfo("getDataToShow");
+    // this.logInfo("getDataToShow");
 
     if (this.qrArray.length == 0) {
       return { content: null };
@@ -54,14 +54,14 @@ class UserData extends NativeEventEmitter {
   }
 
   renameQR(name, index = this.selected || 0) {
-    console.log("renameQR", name, index, this.qrArray);
+    // console.log("renameQR", name, index, this.qrArray);
 
     this.qrArray[index].name = name;
     this.emitChange();
   }
 
   replaceQR(code, index = this.selected || 0) {
-    console.log("renameQR", code, index, this.qrArray);
+    // console.log("renameQR", code, index, this.qrArray);
 
     this.qrArray[index].content = code;
     this.emitChange();
@@ -81,7 +81,7 @@ class UserData extends NativeEventEmitter {
     this.qrArray.splice(index, 1);
     this.selected = this.selected % this.qrArray.length;
 
-    console.log("len / sel", this.qrArray.length, this.selected);
+    // console.log("len / sel", this.qrArray.length, this.selected);
 
     this.emitChange();
   }
@@ -97,7 +97,7 @@ class UserData extends NativeEventEmitter {
     this.qrArray = [...qrArray.splice(0, selected + 1), elem, ...qrArray];
     this.selected = (selected + 1) % this.qrArray.length;
 
-    this.logInfo("insertQR");
+    // this.logInfo("insertQR");
 
     this.emitChange();
   }

@@ -2,6 +2,7 @@
   "expo": {
     "name": "QRWallet",
     "slug": "qrwallet",
+    "owner": "nikmedoed",
     "description": "Приложение для хранения QR-кодов",
     "version": "1.0.0",
     "sdkVersion": "42.0.0",

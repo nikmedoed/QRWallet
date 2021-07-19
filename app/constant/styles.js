@@ -31,6 +31,11 @@ export default styles = StyleSheet.create({
     fontSize: 25,
   },
 
+  textError: {
+    borderColor: "red",
+    backgroundColor: "rgba(255,0,47, 0.1)",
+  },
+
   icon: {
     height: inconSize,
     width: inconSize,

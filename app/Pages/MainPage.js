@@ -26,7 +26,7 @@ export default class MainScreen extends React.Component {
   }
 
   updateState() {
-    console.log("updateState");
+    // console.log("updateState");
 
     this.setState({
       ...UserData.getDataToShow("updateState"),
@@ -66,7 +66,7 @@ export default class MainScreen extends React.Component {
     };
 
     const { selected, name, content } = this.state;
-    console.log("render selected, name, content", selected, name, content);
+    // console.log("render selected, name, content", selected, name, content);
     const { navigation } = this.props;
     if (!content) {
       return <AddQR navigation={navigation} noBack={true} />;
@@ -80,7 +80,7 @@ export default class MainScreen extends React.Component {
           style={styles.container}
         >
           <View style={styles.containerSecondary}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{ ...styles.icon, top: 0, left: 0 }}
               onPress={() =>
                 picker((e) => {
@@ -93,7 +93,7 @@ export default class MainScreen extends React.Component {
                 height="100%"
                 fill={styleConstants.mainColor}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <QRCode size={250} value={content} />
 
@@ -105,7 +105,10 @@ export default class MainScreen extends React.Component {
                 }
               }
             >
-              <Text style={{ ...styles.titleText }}>{name || content}</Text>
+              <Text style={{ ...styles.titleText }}>{`${
+                name || ""
+                // content.slice(0, 100) + (content.length > 100 ? "..." : "")
+              }`}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
